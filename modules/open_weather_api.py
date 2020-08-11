@@ -12,7 +12,16 @@ def get_weather(lat, long):
     weather = observation_list.weather
     tmp = weather.temperature('celsius')
     return "temperature: {}, feels like: {}, humidity: {}, wind: {}, status: {}".format(tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.status)
-        
+
+def get_weather_by_city_id(city_id):
+    city_id = int(city_id)
+    owm = OWM(OPEN_WEATHER_TOKEN)
+    mgr = owm.weather_manager()
+    observation_list = mgr.weather_at_id(city_id)      
+    weather = observation_list.weather
+    tmp = weather.temperature('celsius')
+    return "temperature: {}, feels like: {}, humidity: {}, wind: {}, status: {}".format(tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.status)
+            
 def safe_get_weather(lat, long):
     try:
         data = get_weather(lat, long)
