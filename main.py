@@ -1,14 +1,19 @@
-from telegram.ext import Updater, CommandHandler
+import telebot
+import requests
+import json
 
 
-def hello(update, context):
-    update.message.reply_text(
-        'Hello {}'.format(update.message.from_user.first_name))
+BOT_TOKEN = '1319888554:AAHq87K4FeErNJM63HdqANzlOfeDHk3O-2k'
+    
 
-
-updater = Updater('1319888554:AAHq87K4FeErNJM63HdqANzlOfeDHk3O-2k', use_context=True)
-
-updater.dispatcher.add_handler(CommandHandler('hello', hello))
-
-updater.start_polling()
-updater.idle()
+@bot.message_handler(commands=['start', 'help'])
+def send_welcome(message):
+	bot.reply_to(message, "Howdy, how are you doing?")
+    
+@bot.message_handler(commands=['weather'])    
+def send_welcome(message):
+	bot.reply_to(message, "Howdy, how are you doing?")
+    
+@bot.message_handler(commands=['cities'])    
+def send_welcome(message):
+	bot.reply_to(message, get_cities())    
