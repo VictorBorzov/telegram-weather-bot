@@ -1,43 +1,28 @@
 from pyowm import OWM
-import json
+from sys import path
 
-OPEN_WEATHER_TOKEN = "8b103e84d923cfbf598b64dec25e77ee"
+path.append('modules')
+from settings import get_owm_token
 
-def get_weather(lat, long):
+OPEN_WEATHER_TOKEN = get_owm_token()
+
+owm = OWM(OPEN_WEATHER_TOKEN)
+mgr = owm.weather_manager()
+
+def weather_to_string(weather):
+	tmp = weather.temperature('celsius')
+	return "Temperature: {}°C\nFeels like: {}°C\nHumidity: {}%\nWind speed: {} m/sec\nPressure: {} hPa".format(
+		tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.pressure["press"])
+	
+def get_weather_by_coordinates(lat, long):
     lat = float(lat)
     long = float(long)
-    owm = OWM(OPEN_WEATHER_TOKEN)
-    mgr = owm.weather_manager()
     observation_list = mgr.weather_at_coords(lat, long)      
-    weather = observation_list.weather
-    tmp = weather.temperature('celsius')
-    return "temperature: {}, feels like: {}, humidity: {}, wind: {}, status: {}".format(tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.status)
+    return weather_to_string(observation_list.weather)
 
 def get_weather_by_city_id(city_id):
     city_id = int(city_id)
-    owm = OWM(OPEN_WEATHER_TOKEN)
-    mgr = owm.weather_manager()
     observation_list = mgr.weather_at_id(city_id)      
-    weather = observation_list.weather
-    tmp = weather.temperature('celsius')
-    return "temperature: {}, feels like: {}, humidity: {}, wind: {}, status: {}".format(tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.status)
-            
-def safe_get_weather(lat, long):
-    try:
-        data = get_weather(lat, long)
-        return True, data
-    except:
-        return False, "error while getting weather"
+    return weather_to_string(observation_list.weather)
                 
-def get_cities():
-    with open("data\city.list.json", 'r', encoding='utf-8') as json_file:
-        data = json.load(json_file)
-        return data
-
-def safe_get_cities():
-    try:
-        data = get_cities()
-        return True, data
-    except:
-        return False, "error while getting cities list"
-
+            

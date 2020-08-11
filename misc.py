@@ -1,8 +1,12 @@
 import logging
 from aiogram import Bot, Dispatcher
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+from sys import path
 
-TOKEN = '1319888554:AAHq87K4FeErNJM63HdqANzlOfeDHk3O-2k'
+path.append('modules')
+from settings import get_bot_token
+
+TOKEN = get_bot_token()
 
 bot = Bot(token=TOKEN)
 dp = Dispatcher(bot, storage=MemoryStorage())

@@ -4,9 +4,9 @@ from aiogram.dispatcher.filters.state import State, StatesGroup
 from misc import dp
 from string import ascii_uppercase
 import json 
-import sys
+from sys import path
 
-sys.path.append('modules')
+path.append('modules')
 import open_weather_api as owa
 
 with open("data\city.list.json", 'r', encoding="utf-8") as json_file:
@@ -52,7 +52,7 @@ async def show_available_cities(message: types.Message, state: FSMContext):
     
 
 # choose country 
-@dp.message_handler(commands="city", state="*")
+@dp.message_handler(commands="weather_by_city", state="*")
 async def city_step_1(message: types.Message):
     await message.answer("Choose country code: /available_countries")
     await CityChoice.waiting_for_country_name.set()
