@@ -1,8 +1,10 @@
 from pyowm import OWM
 from sys import path
+import sys
 
 path.append('modules')
 from settings import get_owm_token
+from what_to_wear_recommendations import get_recomendations_by_weather
 
 OPEN_WEATHER_TOKEN = get_owm_token()
 owm = OWM(OPEN_WEATHER_TOKEN)
@@ -10,8 +12,8 @@ mgr = owm.weather_manager()
 
 def weather_to_string(weather):
 	tmp = weather.temperature('celsius')
-	return "In general: {}\nTemperature: {}°C\nFeels like: {}°C\nHumidity: {}%\nWind speed: {} m/sec\nPressure: {} hPa".format(
-		weather.status, tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.pressure["press"])
+	return "In general: {}\nTemperature: {}°C\nFeels like: {}°C\nHumidity: {}%\nWind speed: {} m/sec\nPressure: {} hPa\n\nRecommendations:{}".format(
+		weather.status, tmp['temp'], tmp['feels_like'], weather.humidity, weather.wind()['speed'], weather.pressure["press"], get_recomendations_by_weather(weather))
 
 def forecast_to_string(forecast):
 	return map(lambda weather : weather.reference_time('iso') + "\n" + weather_to_string(weather), forecast.weathers[:16])
@@ -37,6 +39,4 @@ def get_3h_forecast_by_city_id(city_id):
     city_id = int(city_id)
     forecast = mgr.forecast_at_id(city_id, "3h").forecast    
     return forecast_to_string(forecast)
-import what_to_wear_recommendations as rec                            							
-weather = mgr.weather_at_id(524894).weather
-print(rec.get_recomendations_by_weather(weather))
+

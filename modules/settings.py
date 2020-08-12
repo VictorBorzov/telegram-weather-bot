@@ -16,4 +16,11 @@ def get_owm_token():
 	if not config.has_option(section, option):
 		raise ("config file doesn't contain {}:{}".format(section, option))
 	return config[section][option]
-	
+
+def get_admin_id():
+	section = "Tokens"
+	option = "Admin"
+	if not config.has_option(section, option):
+		raise ("config file doesn't contain {}:{}".format(section, option))
+	return config[section][option]
+		

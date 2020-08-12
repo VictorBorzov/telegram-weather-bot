@@ -48,7 +48,7 @@ async def show_available_cities(message: types.Message, state: FSMContext):
     keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
     for c in ascii_uppercase:
         keyboard.add(c)
-    await message.answer("Type first letter: /available_countries", reply_markup=keyboard)
+    await message.answer("Please, type first letter", reply_markup=keyboard)
     
 
 # choose country 

@@ -1,11 +1,11 @@
-from aiogram import types 
-from misc import dp, bot
+from aiogram import types
+from misc import dp
 
-@dp.message_handler(commands="set_commands", state="*")
-async def cmd_set_commands(message: types.Message):
-    if message.from_user.id == 398978035:  
-        commands = [types.BotCommand(command="/weather_by_city", description="search city"), 
-					types.BotCommand(command="/weather_by_gps", description="share my location")]
-        await bot.set_my_commands(commands)
-        await message.answer("Command hint udpated.")    
-
+@dp.message_handler(commands=["start"])
+async def cmd_start(message: types.Message):
+    await message.answer("/help")
+    
+@dp.message_handler(content_types=types.ContentTypes.ANY)
+async def all_other_messages(message: types.Message):
+    await message.answer("unknown command")    
+    
