@@ -18,9 +18,11 @@ def get_owm_token():
 	return config[section][option]
 
 def get_admin_id():
-	section = "Tokens"
-	option = "Admin"
-	if not config.has_option(section, option):
-		return 0
-	return config[section][option]
-		
+    section = "Tokens"
+    option = "Admin"
+    if not config.has_option(section, option):
+        return 0
+    value = config[section][option]
+    if not bool(value):
+        return 0
+    return value
