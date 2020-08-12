@@ -21,5 +21,6 @@ async def gps_detection_step_1(message: types.Message):
 	
 @dp.message_handler(state=GPSDetection.waiting_for_location, content_types=types.ContentTypes.LOCATION)
 async def gps_detection_step_1(message: types.Message):	
-	weather = owa.get_weather_by_coordinates(message.location.latitude, message.location.longitude)
-	await message.answer(weather)	
+	forecast = owa.get_3h_forecast_by_coordinates(message.location.latitude, message.location.longitude)
+	for weather in forecast:
+		await message.answer(weather)	

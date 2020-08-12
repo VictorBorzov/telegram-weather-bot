@@ -74,46 +74,49 @@ def RepresentsInt(s):
         return True
     except ValueError:
         return False
+	
 
 # clarify city id if necessary
 @dp.message_handler(state=CityChoice.waiting_for_city_id, content_types=types.ContentTypes.TEXT)
 async def city_step_3(message: types.Message, state: FSMContext): 
-    # show hint for first uppercase letter
-    cities = set()
-    user_data = await state.get_data()
-    if message.text in ascii_uppercase:
-        for city in countries_to_cities[user_data["chosen_country"]]:
-            if not city["name"] in cities and city["name"][0] == message.text:
-                cities.add(city["name"])
-        cities = sorted(cities)
-        splitted_cities = divide_chunks(list(cities), 100)
-        for cities in splitted_cities:
-            await message.answer(", ".join(cities))
-        return
-    
-    if "id: " in message.text:
-        id_str = message.text.split("id: ", 1)[1]
-        if not RepresentsInt(id_str):
-            await message.reply("Please, choose correct city name /available_cities.")
-            return    
-        #city id clarified            
-        weather = owa.get_weather_by_city_id(id_str)
-        await message.reply(weather)
-        await state.finish()
-        return 
-    chosen_city_name = message.text    
-    cities_with_name = find_cities_in_country(chosen_city_name, user_data["chosen_country"])
-    if len(cities_with_name) < 1:
-        await message.reply("Please, choose correct city name /available_cities.")
-        return
-    elif len(cities_with_name) > 1:
-        keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
-        for city in cities_with_name:
-            keyboard.add("name: {}, latitude: {}, longitude: {}, id: {}".format(city["name"], city["coord"]["lat"], city["coord"]["lon"], city["id"]))
-        await message.reply("Several cities found, please, clarify the location.", reply_markup=keyboard)
-        return
-    # city name is unique
-    weather = owa.get_weather_by_city_id(cities_with_name[0]["id"])
-    await message.reply(weather)
-    await state.finish()
+	# show hint for first uppercase letter
+	cities = set()
+	user_data = await state.get_data()
+	if message.text in ascii_uppercase:
+		for city in countries_to_cities[user_data["chosen_country"]]:
+			if not city["name"] in cities and city["name"][0] == message.text:
+				cities.add(city["name"])
+		cities = sorted(cities)
+		splitted_cities = divide_chunks(list(cities), 100)
+		for cities in splitted_cities:
+			await message.answer(", ".join(cities))
+		return
+
+	if "id: " in message.text:
+		id_str = message.text.split("id: ", 1)[1]
+		if not RepresentsInt(id_str):
+			await message.reply("Please, choose correct city name /available_cities.")
+			return    
+		#city id clarified            
+		forecast = owa.get_3h_forecast_by_city_id(id_str)
+		for weather in forecast:
+			await message.answer(weather)	
+		await state.finish()
+		return 
+	chosen_city_name = message.text    
+	cities_with_name = find_cities_in_country(chosen_city_name, user_data["chosen_country"])
+	if len(cities_with_name) < 1:
+		await message.reply("Please, choose correct city name /available_cities.")
+		return
+	elif len(cities_with_name) > 1:
+		keyboard = types.ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True)
+		for city in cities_with_name:
+			keyboard.add("name: {}, latitude: {}, longitude: {}, id: {}".format(city["name"], city["coord"]["lat"], city["coord"]["lon"], city["id"]))
+		await message.reply("Several cities found, please, clarify the location.", reply_markup=keyboard)
+		return
+	# city name is unique
+	forecast = owa.get_3h_forecast_by_city_id(cities_with_name[0]["id"])
+	for weather in forecast:
+		await message.answer(weather)	
+	await state.finish()
 
