@@ -41,3 +41,5 @@ $ pip install -r requirements.txt
 $ python bot.py
 ```
 5. Use your teleram bot to get forecasts
+
+Video tutorial: https://drive.google.com/file/d/1UneUPZ6hV4ZSBa2cKgC-ZKo--o4mjf3o/view?usp=sharing
